@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Comparison</title>
+   
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #141e30, #243b55);
+            color: white;
+            text-align: center;
+        }
+        header {
+            padding: 20px;
+            background-color: #1a1a1a;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+            color: #00c6ff;
+        }
+        .container {
+            padding: 20px;
+        }
+        .upload-section {
+            margin: 20px auto;
+            max-width: 800px;
+            background: #ffffff10;
+            padding: 20px;
+
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        input[type="file"] {
+            margin: 10px 0;
+            padding: 10px;
+            background: #00c6ff;
+            border: none;
+            border-radius: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+    border-radius: 10px;
+            background-color: #00c6ff;
+            border: none;
+         
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #0077b5;
+        }
+        .results {
+            margin-top: 20px;
+            font-size: 1.2em;
+            background: #ffffff10;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        img {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+            margin: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Face Comparison</h1>
+        <p>Upload two photos and let AI decide who's better looking!</p>
+    </header>
+    <div class="container">
+        <div class="upload-section">
+            <h2 style="border-radius: 10px;">Upload Photos</h2>
+            <input type="file" id="photo1" accept="image/*" onchange="loadImagePreview('preview1', this)">
+            <img id="preview1" src="#" alt="Photo 1 Preview" style="display: none;">
+            <br>
+            <select id="gender1">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+            <br>
+            <input type="file" id="photo2" accept="image/*" onchange="loadImagePreview('preview2', this)">
+            <img id="preview2" src="#" alt="Photo 2 Preview" style="display: none;">
+            <br>
+            <select id="gender2">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+            <br>
+            <button onclick="compareFaces()">Compare Faces</button>
+        </div>
+        <div class="results" id="results">
+           
+    </div>
+    <script>
+        function loadImagePreview(previewId, input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = document.getElementById(previewId);
+                    preview.src = e.target.result;
+                    preview.style.display = "block";
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function getReaction(gender, score, beard = false) {
+            if (gender === "female") {
+                if (score > 75) return "Jakaas dikh rahi h tu to! 😍";
+                if (score > 40) return "Yaar tu mediocur h, improve kar thopdaa tera. 😅";
+                return "Chee yaar, kya thopda h tera! Sara mood kharab kar diya. 🤮";
+            } else if (gender === "male") {
+                if (score > 75) return "Bro, accha dikh raha h tu! Ladki patayi ke nahi? 😎";
+                if (score > 40) return "Bhai tu idhar bhi average reh gaya. Chee yaar! 😐";
+                return "Bro, mar jaa, aisa saada hua thopda lekar! 😭" + (beard ? "" : " (Chikna alert! 🚨)");
+            }
+        }
+
+        function compareFaces() {
+            const photo1 = document.getElementById('photo1').files[0];
+            const photo2 = document.getElementById('photo2').files[0];
+            const gender1 = document.getElementById('gender1').value;
+            const gender2 = document.getElementById('gender2').value;
+
+            if (!photo1 || !photo2) {
+                alert('Please upload both photos!');
+                return;
+            }
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = "<p>Processing... Please wait.</p>";
+
+          
+            const face1Score = Math.floor(Math.random() * 100) + 1;
+            const face2Score = Math.floor(Math.random() * 100) + 1;
+
+
+            const beard1 = Math.random() > 0.5; 
+            const beard2 = Math.random() > 0.5; 
+
+            const reaction1 = getReaction(gender1, face1Score, gender1 === "male" && !beard1);
+            const reaction2 = getReaction(gender2, face2Score, gender2 === "male" && !beard2);
+
+            resultsDiv.innerHTML = `
+                <h3>Results:</h3>
+                <p>Face 1 (${gender1}): ${face1Score}/100 - ${reaction1}</p>
+                <p>Face 2 (${gender2}): ${face2Score}/100 - ${reaction2}</p>
+            `;
+        }
+    </script>
+    <nav style="color: rgb(157, 157, 238);">BY ERRORS CLUB</nav>
+</body>
+</html>
